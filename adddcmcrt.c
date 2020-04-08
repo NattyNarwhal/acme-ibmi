@@ -85,11 +85,11 @@ static int convert_pem_to_pkcs12(char *in, char *inkey, char *out, char *pw)
 	ret = Qp2RunPase(OPENSSL_PGM, NULL, NULL, 0, 1208, pase_argv, pase_envp);
 finish:
 	if (rndfile != NULL) {
-		//unlink(rndfile);
+		unlink(rndfile);
 		free(rndfile);
 	}
 	if (pwfile != NULL) {
-		//unlink(pwfile);
+		unlink(pwfile);
 		free(pwfile);
 	}
 	free(pwutf);
@@ -149,7 +149,7 @@ int main (int argc, char **argv)
 		/* Now convert with OpenSSL... (XXX: less scripty way) */
 		paseret = convert_pem_to_pkcs12(crt, crtkey, crttemp, crtpw);
 		if (!(WIFEXITED(paseret) && WEXITSTATUS(paseret) == 0)) {
-			send_message("ACM0107", MSG_COMP);
+			send_message_int("ACM0107", MSG_COMP, paseret);
 			goto finish;
 		}
 		umask(oldmask);
@@ -180,7 +180,7 @@ finish:
 	free(label);
 	/* We're done with any temporary files we had to make. */
 	if (crttemp != NULL) {
-		//unlink(crttemp);
+		unlink(crttemp);
 		free(crttemp);
 	}
 	return 0;

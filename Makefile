@@ -23,7 +23,7 @@ $(LIB_PATH)/MESSAGES.MSGF: $(LIB_PATH) Makefile
 	system dltmsgf "MSGF($(LIB_NAME)/MESSAGES)" || true
 	system crtmsgf "MSGF($(LIB_NAME)/MESSAGES)" "TEXT('ACME wrapper messages')"
 	$(ADDMSGD) "MSGID(ACM0000)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Action succeeded.')" "SEV(00)"
-	$(ADDMSGD) "MSGID(ACM0001)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Action failed.')" "SEV(30)"
+	$(ADDMSGD) "MSGID(ACM0001)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Action failed with result &1.')" "FMT((*BIN 4))" "SEV(30)"
 	$(ADDMSGD) "MSGID(ACM0002)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Renewal unneeded.')" "SEV(10)"
 	$(ADDMSGD) "MSGID(ACM0101)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('PEM key not needed.')" "SEV(10)"
 	$(ADDMSGD) "MSGID(ACM0102)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('PEM key required to convert.')" "SEV(30)"
@@ -31,7 +31,7 @@ $(LIB_PATH)/MESSAGES.MSGF: $(LIB_PATH) Makefile
 	$(ADDMSGD) "MSGID(ACM0104)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Certificate file inaccessible.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(ACM0105)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('PEM key file inaccessible.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(ACM0106)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Unknown certificate type.')" "SEV(30)"
-	$(ADDMSGD) "MSGID(ACM0107)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Failed to convert certificate.')" "SEV(30)"
+	$(ADDMSGD) "MSGID(ACM0107)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Failed to convert certificate with result &1.')" "FMT((*BIN 4))" "SEV(30)"
 	$(ADDMSGD) "MSGID(ACM0108)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('DCM driver returned result &1.')" "FMT((*BIN 4))" "SEV(30)"
 
 # Commands

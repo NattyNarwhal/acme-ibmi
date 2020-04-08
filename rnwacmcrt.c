@@ -41,17 +41,16 @@ int main (int argc, char **argv)
 	fprintf(stderr, "error code %d\x25", ret);
 #endif
 	if (WIFEXITED(ret)) {
-		ret = WEXITSTATUS(ret);
-		if (ret == 2 && !force) { /* Unnecessary to renew */
+		if (WEXITSTATUS(ret) == 2 && !force) { /* Unnecessary to renew */
 			send_message("ACM0002", MSG_COMP);
 			return 0;
-		} else if (ret == 0) {
+		} else if (WEXITSTATUS(ret) == 0) {
 			send_message("ACM0000", MSG_COMP);
 			return 0;
 		}
 	}
 	/* XXX: fancy would be capturing stdio */
-	send_message("ACM0001", MSG_COMP);
+	send_message_int("ACM0001", MSG_COMP, ret);
 	return 1;
 }
 

@@ -30,14 +30,13 @@ int main (int argc, char **argv)
 	fprintf(stderr, "error code %d\x25", ret);
 #endif
 	if (WIFEXITED(ret)) {
-		ret = WEXITSTATUS(ret);
-		if (ret == 0) {
+		if (WEXITSTATUS(ret) == 0) {
 			send_message("ACM0000", MSG_COMP);
 			return 0;
 		}
 	}
 	/* XXX: fancy would be capturing stdio */
-	send_message("ACM0001", MSG_COMP);
+	send_message_int("ACM0001", MSG_COMP, ret);
 	return 1;
 }
 
