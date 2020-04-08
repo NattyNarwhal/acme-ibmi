@@ -1,0 +1,3 @@
+#!/bin/sh
+# XXX: Log all I/O
+exec /QOpenSys/pkgs/bin/acme-client "$@" >> /QOpenSys/var/log/acme.log 2>> /QOpenSys/var/log/acme.err.log
