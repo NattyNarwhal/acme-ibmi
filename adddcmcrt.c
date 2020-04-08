@@ -165,11 +165,7 @@ int main (int argc, char **argv)
 		QYCUDRIVER("107", "DRIVER_RETURN", keystore, kspw, crtfile, crtpw, label);
 	}
 	driverret = getenv("DRIVER_RETURN");
-	if (driverret == NULL || atoi(driverret) != 0) {
-		send_message_int("ACM0108", MSG_COMP, atoi(driverret));
-		goto finish;
-	}
-	send_message("ACM0000", MSG_COMP);
+	send_message_driver(driverret, MSG_COMP);
 finish:
 	unsetenv("DRIVER_RETURN");
 	free(keystore);

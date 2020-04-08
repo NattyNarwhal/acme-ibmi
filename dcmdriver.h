@@ -1,3 +1,5 @@
+void send_message_driver(char *, char *);
+
 /*
  * This undocumented program is used by the DCM web API.
  * The reason why it uses an environment variable as it's how Net.Data gets
