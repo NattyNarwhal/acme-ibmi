@@ -16,7 +16,7 @@ void send_message_dcm(int ret, char *type)
 		send_message_int("ACM0108", type, ret);
 		return;
 	}
-	snprintf(msgid, 8, "DRV%04x", (int16_t)ret);
+	snprintf(msgid, 8, "DRV%04X", (int16_t)ret);
 	send_message(msgid, type);
 }
 
@@ -45,6 +45,7 @@ void send_message_driver(char *ret, char *type)
 		break;
 	/* DCM driver returnables that we know of */
 	case 21: /* Duplicate key(/label?) */
+	case 365: /* PKCS#12 digest error */
 		send_message_dcm(iret, type);
 		break;
 	}
