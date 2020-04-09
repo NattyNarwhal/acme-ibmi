@@ -5,6 +5,8 @@ LIB_PATH := $(QSYS)/$(LIB_NAME).LIB
 ADDMSGD := system addmsgd
 CRTBNDC := system crtbndc
 CRTBNDC_OPTS := "SYSIFCOPT(*IFSIO)" #"output(*PRINT)"
+CRTCMD := system crtcmd
+CRTCMD_OPTS := "THDSAFE(*YES)"
 CRTCMOD := system crtcmod
 CRTCMOD_OPTS := "SYSIFCOPT(*IFSIO)" #"output(*PRINT)"
 CRTLIB := system crtlib
@@ -66,19 +68,19 @@ $(LIB_PATH)/QCMDSRC.FILE/RVKACMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE rvkacmcrt.cmd
 
 $(LIB_PATH)/ADDDCMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/ADDDCMCRT.MBR $(LIB_PATH)/ADDDCMCRT.PGM
 	system dltcmd "cmd(acme/adddcmcrt)" || true
-	system crtcmd "cmd(acme/adddcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/adddcmcrt)"
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/adddcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/adddcmcrt)"
 
 $(LIB_PATH)/RMVDCMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RMVDCMCRT.MBR $(LIB_PATH)/RMVDCMCRT.PGM
 	system dltcmd "cmd(acme/rmvdcmcrt)" || true
-	system crtcmd "cmd(acme/rmvdcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rmvdcmcrt)"
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rmvdcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rmvdcmcrt)"
 
 $(LIB_PATH)/RNWACMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RNWACMCRT.MBR $(LIB_PATH)/RNWACMCRT.PGM
 	system dltcmd "cmd(acme/rnwacmcrt)" || true
-	system crtcmd "cmd(acme/rnwacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rnwacmcrt)"
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rnwacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rnwacmcrt)"
 
 $(LIB_PATH)/RVKACMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RVKACMCRT.MBR $(LIB_PATH)/RVKACMCRT.PGM
 	system dltcmd "cmd(acme/rvkacmcrt)" || true
-	system crtcmd "cmd(acme/rvkacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rvkacmcrt)"
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rvkacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rvkacmcrt)"
 
 # Programs
 $(LIB_PATH)/ADDDCMCRT.PGM: $(LIB_PATH)/ADDDCMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE $(LIB_PATH)/VARCHAR.MODULE $(LIB_PATH)/EBCDIC.MODULE $(LIB_PATH)/DCMDRIVER.MODULE
