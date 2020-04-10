@@ -46,7 +46,9 @@ void send_message_driver(char *ret, char *type)
 	/* DCM driver returnables that we know of */
 	case 16: /* Invalid keystore password */
 	case 21: /* Duplicate key(/label?) */
+	case 85: /* Invalid b64 */
 	case 109: /* No label */
+	case 330: /* Renewal doesn't match anything */
 	case 365: /* PKCS#12 digest error */
 		send_message_dcm(iret, type);
 		break;

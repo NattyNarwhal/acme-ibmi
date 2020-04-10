@@ -15,7 +15,7 @@ CRTPGM_OPTS := #"bndsrvpgm(QICSS/QYCUCERTI)"
 
 .PHONY: all clean test dist
 
-all: $(LIB_PATH)/ADDDCMCRT.CMD $(LIB_PATH)/RMVDCMCRT.CMD $(LIB_PATH)/RNWACMCRT.CMD $(LIB_PATH)/RVKACMCRT.CMD $(LIB_PATH)/MESSAGES.MSGF
+all: $(LIB_PATH)/ADDDCMCRT.CMD $(LIB_PATH)/RMVDCMCRT.CMD $(LIB_PATH)/RNWACMCRT.CMD $(LIB_PATH)/RNWDCMCRT.CMD $(LIB_PATH)/RVKACMCRT.CMD $(LIB_PATH)/MESSAGES.MSGF
 
 clean:
 	system dltlib $(LIB_NAME)
@@ -39,7 +39,9 @@ $(LIB_PATH)/MESSAGES.MSGF: $(LIB_PATH) Makefile
 	# Here begins the DCM driver messages
 	$(ADDMSGD) "MSGID(DRV0010)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Invalid keystore password.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV0015)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Duplicate key/label.')" "SEV(30)"
+	$(ADDMSGD) "MSGID(DRV0055)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Invalid Base64 data.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV006D)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('No key exists with that label.')" "SEV(30)"
+	$(ADDMSGD) "MSGID(DRV014A)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('No certificates match for renewal.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV016D)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('PKCS#12 digest failure; is the password correct?')" "SEV(30)"
 
 # Commands
@@ -62,6 +64,11 @@ $(LIB_PATH)/QCMDSRC.FILE/RNWACMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE rnwacmcrt.cmd
 	system addpfm "file(acme/qcmdsrc)" "mbr(rnwacmcrt)"
 	system cpyfrmstmf "mbropt(*replace)" "fromstmf(rnwacmcrt.cmd)" "tombr('$(LIB_PATH)/QCMDSRC.FILE/RNWACMCRT.MBR')"
 
+$(LIB_PATH)/QCMDSRC.FILE/RNWDCMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE rnwdcmcrt.cmd
+	system rmvm "file(acme/qcmdsrc)" "mbr(rnwdcmcrt)" || true
+	system addpfm "file(acme/qcmdsrc)" "mbr(rnwdcmcrt)"
+	system cpyfrmstmf "mbropt(*replace)" "fromstmf(rnwdcmcrt.cmd)" "tombr('$(LIB_PATH)/QCMDSRC.FILE/RNWDCMCRT.MBR')"
+
 $(LIB_PATH)/QCMDSRC.FILE/RVKACMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE rvkacmcrt.cmd
 	system rmvm "file(acme/qcmdsrc)" "mbr(rvkacmcrt)" || true
 	system addpfm "file(acme/qcmdsrc)" "mbr(rvkacmcrt)"
@@ -79,6 +86,10 @@ $(LIB_PATH)/RNWACMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RNWACMCRT.MBR $(LIB_PATH)/RN
 	system dltcmd "cmd(acme/rnwacmcrt)" || true
 	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rnwacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rnwacmcrt)"
 
+$(LIB_PATH)/RNWDCMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RNWDCMCRT.MBR $(LIB_PATH)/RNWDCMCRT.PGM
+	system dltcmd "cmd(acme/rnwdcmcrt)" || true
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rnwdcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rnwdcmcrt)"
+
 $(LIB_PATH)/RVKACMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RVKACMCRT.MBR $(LIB_PATH)/RVKACMCRT.PGM
 	system dltcmd "cmd(acme/rvkacmcrt)" || true
 	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rvkacmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rvkacmcrt)"
@@ -92,6 +103,9 @@ $(LIB_PATH)/RMVDCMCRT.PGM: $(LIB_PATH)/RMVDCMCRT.MODULE $(LIB_PATH)/SNDMSG.MODUL
 
 $(LIB_PATH)/RNWACMCRT.PGM: $(LIB_PATH)/RNWACMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE
 	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/RNWACMCRT)" "MODULE($(LIB_NAME)/RNWACMCRT $(LIB_NAME)/SNDMSG)"
+
+$(LIB_PATH)/RNWDCMCRT.PGM: $(LIB_PATH)/RNWDCMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE $(LIB_PATH)/VARCHAR.MODULE $(LIB_PATH)/DCMDRIVER.MODULE
+	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/RNWDCMCRT)" "MODULE($(LIB_NAME)/RNWDCMCRT $(LIB_NAME)/DCMDRIVER $(LIB_NAME)/SNDMSG $(LIB_NAME)/VARCHAR)"
 
 $(LIB_PATH)/RVKACMCRT.PGM: $(LIB_PATH)/RVKACMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE
 	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/RVKACMCRT)" "MODULE($(LIB_NAME)/RVKACMCRT $(LIB_NAME)/SNDMSG)"
@@ -111,6 +125,9 @@ $(LIB_PATH)/RMVDCMCRT.MODULE: $(LIB_PATH) rmvdcmcrt.c
 
 $(LIB_PATH)/RNWACMCRT.MODULE: $(LIB_PATH) rnwacmcrt.c
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RNWACMCRT)" "SRCSTMF('rnwacmcrt.c')"
+
+$(LIB_PATH)/RNWDCMCRT.MODULE: $(LIB_PATH) rnwdcmcrt.c
+	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RNWDCMCRT)" "SRCSTMF('rnwdcmcrt.c')"
 
 $(LIB_PATH)/RVKACMCRT.MODULE: $(LIB_PATH) rvkacmcrt.c
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RVKACMCRT)" "SRCSTMF('rvkacmcrt.c')"
