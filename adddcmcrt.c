@@ -127,8 +127,12 @@ int main (int argc, char **argv)
 	label = vctostr((varchar16_t*)argv[7]);
 	/* If we have a PEM certificate, make a temporary PKCS file */
 	if (memcmp(crttype, "*PKCS12", 7) == 0) {
-		if (strlen(crtkey) > 0) {
-			send_message("ACM0101", MSG_INFO);
+		/*
+		 * XPF is "helpful" and always tries to send us a string with
+		 * a character, even if it's just spaces
+		 */
+		if (strlen(crtkey) > 1 || (strlen(crtkey) == 1 && *crtkey != ' ')) {
+			send_message("ACM0101", MSG_DIAG);
 		}
 		crtfile = crt;
 	} else if (memcmp(crttype, "*PEM   ", 7) == 0) { /* *PEM */
