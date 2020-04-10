@@ -10,6 +10,7 @@ int main (int argc, char **argv)
 {
 	/* Args */
 	char *keystore = NULL, *kspw = NULL, *label = NULL, *driverret;
+	ensure_libl();
 	keystore = vctostr((varchar16_t*)argv[1]);
 	if (access(keystore, R_OK) != 0) {
 		send_message("ACM0103", MSG_COMP);

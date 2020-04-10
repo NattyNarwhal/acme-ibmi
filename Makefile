@@ -37,6 +37,7 @@ $(LIB_PATH)/MESSAGES.MSGF: $(LIB_PATH) Makefile
 	$(ADDMSGD) "MSGID(ACM0108)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('DCM driver returned result &1.')" "FMT((*BIN 4))" "SEV(30)"
 	$(ADDMSGD) "MSGID(ACM0109)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('DCM driver returned no result.')" "SEV(30)"
 	# Here begins the DCM driver messages
+	$(ADDMSGD) "MSGID(DRV0010)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Invalid keystore password.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV0015)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('Duplicate key/label.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV006D)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('No key exists with that label.')" "SEV(30)"
 	$(ADDMSGD) "MSGID(DRV016D)" "MSGF($(LIB_NAME)/MESSAGES)" "MSG('PKCS#12 digest failure; is the password correct?')" "SEV(30)"

@@ -44,9 +44,18 @@ void send_message_driver(char *ret, char *type)
 		send_message("ACM0000", type);
 		break;
 	/* DCM driver returnables that we know of */
+	case 16: /* Invalid keystore password */
 	case 21: /* Duplicate key(/label?) */
+	case 109: /* No label */
 	case 365: /* PKCS#12 digest error */
 		send_message_dcm(iret, type);
 		break;
 	}
+}
+
+/* HACK: QICSS must be on our library list. Make it so. */
+void ensure_libl(void)
+{
+	/* XXX: should use qlichgll */
+	system("addlible qicss");
 }
