@@ -44,10 +44,14 @@ void send_message_driver(char *ret, char *type)
 		send_message("ACM0000", type);
 		break;
 	/* DCM driver returnables that we know of */
+	/* XXX: Check/handle if message (doesn't) exist so we don't need to have this */
 	case 16: /* Invalid keystore password */
 	case 21: /* Duplicate key(/label?) */
+	case 34: /* Validation error */
+	case 78: /* Error opening file */
 	case 85: /* Invalid b64 */
 	case 109: /* No label */
+	case 325: /* Failed to copy to keystore */
 	case 330: /* Renewal doesn't match anything */
 	case 365: /* PKCS#12 digest error */
 		send_message_dcm(iret, type);

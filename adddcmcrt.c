@@ -116,7 +116,7 @@ int main (int argc, char **argv)
 	}
 	kspw = vctostr((varchar16_t*)argv[2]);
 	crt = vctostr((varchar16_t*)argv[3]);
-	if (access(keystore, R_OK) != 0) {
+	if (access(crt, R_OK) != 0) {
 		send_message("ACM0104", MSG_COMP);
 		goto finish;
 	}
@@ -134,6 +134,10 @@ int main (int argc, char **argv)
 		if (strlen(crtkey) > 1 || (strlen(crtkey) == 1 && *crtkey != ' ')) {
 			send_message("ACM0101", MSG_DIAG);
 		}
+		if (strlen(crtpw) < 1 || (strlen(crtpw) == 1 && *crtpw == ' ')) {
+			send_message("ACM010A", MSG_DIAG);
+			goto finish;
+		}
 		crtfile = crt;
 	} else if (memcmp(crttype, "*PEM   ", 7) == 0) { /* *PEM */
 		if (strlen(crtkey) <= 0) {
@@ -141,7 +145,7 @@ int main (int argc, char **argv)
 			goto finish;
 		}
 		if (access(crtkey, R_OK) != 0) {
-			send_message("ACM0102", MSG_COMP);
+			send_message("ACM0105", MSG_COMP);
 			goto finish;
 		}
 		/* Ugly shenanigans to make a temporary file... */
