@@ -5,7 +5,7 @@
 
 #include "sndmsg.h"
 
-#define PASE_PGM "/home/CALVIN/acme/libexec/acme/wrap-acme-client"
+#include "config.h"
 
 /*
  * Parm 1: domain, 255-byte fixed length string, padded by spaces. truncate or else

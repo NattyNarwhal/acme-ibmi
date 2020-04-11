@@ -18,7 +18,7 @@
 #include "unsetenv.h"
 #include "varchar.h"
 
-#define OPENSSL_PGM "/QOpenSys/usr/bin/openssl"
+#include "config.h"
 
 static char* tempfilename(char *purpose)
 {

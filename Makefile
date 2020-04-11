@@ -13,12 +13,25 @@ CRTLIB := system crtlib
 CRTPGM := system crtpgm
 CRTPGM_OPTS := #"bndsrvpgm(QICSS/QYCUCERTI)"
 
+PREFIX := /QOpenSys/Acme
+
 .PHONY: all clean test dist
 
 all: $(LIB_PATH)/ADDDCMCA.CMD $(LIB_PATH)/ADDDCMCRT.CMD $(LIB_PATH)/RMVDCMCRT.CMD $(LIB_PATH)/RNWACMCRT.CMD $(LIB_PATH)/RNWDCMCRT.CMD $(LIB_PATH)/RVKACMCRT.CMD $(LIB_PATH)/MESSAGES.MSGF
 
 clean:
+	rm -f config.h
 	system dltlib $(LIB_NAME)
+
+config.h:
+	echo "/* These configuration values are derived from the Makefile */" > config.h
+	echo "#define OPENSSL_PGM \"`which openssl`\"" >> config.h
+	echo "#define PASE_PGM \"$(PREFIX)/libexec/wrap-acme-client\"" >> config.h
+
+install: config.h
+	# Assume ILE components should be built now. We will install PASE components into IFS.
+	mkdir -p -m 0755 "$(PREFIX)/libexec"
+	install -m 0755 -o 0 wrap-acme-client "$(PREFIX)/libexec/wrap-acme-client"
 
 # Messages
 $(LIB_PATH)/MESSAGES.MSGF: $(LIB_PATH) Makefile
@@ -127,34 +140,34 @@ $(LIB_PATH)/RVKACMCRT.PGM: $(LIB_PATH)/RVKACMCRT.MODULE $(LIB_PATH)/SNDMSG.MODUL
 	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/RVKACMCRT)" "MODULE($(LIB_NAME)/RVKACMCRT $(LIB_NAME)/SNDMSG)"
 
 # Modules
-$(LIB_PATH)/ADDDCMCA.MODULE: $(LIB_PATH) adddcmca.c
+$(LIB_PATH)/ADDDCMCA.MODULE: $(LIB_PATH) adddcmca.c dcmdriver.h sndmsg.h unsetenv.h varchar.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/ADDDCMCA)" "SRCSTMF('adddcmca.c')"
 
-$(LIB_PATH)/ADDDCMCRT.MODULE: $(LIB_PATH) adddcmcrt.c
+$(LIB_PATH)/ADDDCMCRT.MODULE: $(LIB_PATH) adddcmcrt.c dcmdriver.h sndmsg.h unsetenv.h varchar.h config.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/ADDDCMCRT)" "SRCSTMF('adddcmcrt.c')"
 
-$(LIB_PATH)/DCMDRIVER.MODULE: $(LIB_PATH) dcmdriver.c
+$(LIB_PATH)/DCMDRIVER.MODULE: $(LIB_PATH) dcmdriver.c sndmsg.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/DCMDRIVER)" "SRCSTMF('dcmdriver.c')"
 
 $(LIB_PATH)/EBCDIC.MODULE: $(LIB_PATH) ebcdic.c
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/EBCDIC)" "SRCSTMF('ebcdic.c')"
 
-$(LIB_PATH)/RMVDCMCRT.MODULE: $(LIB_PATH) rmvdcmcrt.c
+$(LIB_PATH)/RMVDCMCRT.MODULE: $(LIB_PATH) rmvdcmcrt.c  dcmdriver.h sndmsg.h unsetenv.h varchar.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RMVDCMCRT)" "SRCSTMF('rmvdcmcrt.c')"
 
-$(LIB_PATH)/RNWACMCRT.MODULE: $(LIB_PATH) rnwacmcrt.c
+$(LIB_PATH)/RNWACMCRT.MODULE: $(LIB_PATH) rnwacmcrt.c sndmsg.h config.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RNWACMCRT)" "SRCSTMF('rnwacmcrt.c')"
 
-$(LIB_PATH)/RNWDCMCRT.MODULE: $(LIB_PATH) rnwdcmcrt.c
+$(LIB_PATH)/RNWDCMCRT.MODULE: $(LIB_PATH) rnwdcmcrt.c dcmdriver.h sndmsg.h unsetenv.h varchar.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RNWDCMCRT)" "SRCSTMF('rnwdcmcrt.c')"
 
-$(LIB_PATH)/RVKACMCRT.MODULE: $(LIB_PATH) rvkacmcrt.c
+$(LIB_PATH)/RVKACMCRT.MODULE: $(LIB_PATH) rvkacmcrt.c sndmsg.h config.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/RVKACMCRT)" "SRCSTMF('rvkacmcrt.c')"
 
-$(LIB_PATH)/SNDMSG.MODULE: $(LIB_PATH) sndmsg.c
+$(LIB_PATH)/SNDMSG.MODULE: $(LIB_PATH) sndmsg.c sndmsg.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/SNDMSG)" "SRCSTMF('sndmsg.c')"
 
-$(LIB_PATH)/VARCHAR.MODULE: $(LIB_PATH) varchar.c
+$(LIB_PATH)/VARCHAR.MODULE: $(LIB_PATH) varchar.c varchar.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/VARCHAR)" "SRCSTMF('varchar.c')"
 
 # Libraries
