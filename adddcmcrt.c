@@ -111,13 +111,15 @@ int main (int argc, char **argv)
 	ensure_libl();
 	keystore = vctostr((varchar16_t*)argv[1]);
 	if (access(keystore, R_OK) != 0) {
-		send_message("ACM0103", MSG_COMP);
+		send_message("ACM0103", MSG_DIAG);
+		send_message("ACM0103", MSG_STATUS);
 		goto finish;
 	}
 	kspw = vctostr((varchar16_t*)argv[2]);
 	crt = vctostr((varchar16_t*)argv[3]);
 	if (access(crt, R_OK) != 0) {
-		send_message("ACM0104", MSG_COMP);
+		send_message("ACM0104", MSG_DIAG);
+		send_message("ACM0104", MSG_STATUS);
 		goto finish;
 	}
 	crtkey = vctostr((varchar16_t*)argv[4]);
@@ -133,19 +135,23 @@ int main (int argc, char **argv)
 		 */
 		if (strlen(crtkey) > 1 || (strlen(crtkey) == 1 && *crtkey != ' ')) {
 			send_message("ACM0101", MSG_DIAG);
+			send_message("ACM0101", MSG_STATUS);
 		}
 		if (strlen(crtpw) < 1 || (strlen(crtpw) == 1 && *crtpw == ' ')) {
 			send_message("ACM010A", MSG_DIAG);
+			send_message("ACM010A", MSG_STATUS);
 			goto finish;
 		}
 		crtfile = crt;
 	} else if (memcmp(crttype, "*PEM   ", 7) == 0) { /* *PEM */
 		if (strlen(crtkey) <= 0) {
-			send_message("ACM0102", MSG_COMP);
+			send_message("ACM0102", MSG_DIAG);
+			send_message("ACM0102", MSG_STATUS);
 			goto finish;
 		}
 		if (access(crtkey, R_OK) != 0) {
-			send_message("ACM0105", MSG_COMP);
+			send_message("ACM0105", MSG_DIAG);
+			send_message("ACM0105", MSG_STATUS);
 			goto finish;
 		}
 		/* Ugly shenanigans to make a temporary file... */
@@ -158,13 +164,15 @@ int main (int argc, char **argv)
 		/* Now convert with OpenSSL... (XXX: less scripty way) */
 		paseret = convert_pem_to_pkcs12(crt, crtkey, crttemp, crtpw);
 		if (!(WIFEXITED(paseret) && WEXITSTATUS(paseret) == 0)) {
-			send_message_int("ACM0107", MSG_COMP, paseret);
+			send_message_int("ACM0107", MSG_DIAG, paseret);
+			send_message_int("ACM0107", MSG_STATUS, paseret);
 			goto finish;
 		}
 		umask(oldmask);
 		crtfile = crttemp;
 	} else {
-		send_message("ACM0106", MSG_COMP);
+		send_message("ACM0106", MSG_DIAG);
+		send_message("ACM0106", MSG_STATUS);
 		goto finish;
 	}
 	/* Run driver, then fall through to cleanup */
@@ -174,7 +182,7 @@ int main (int argc, char **argv)
 		QYCUDRIVER("107", "DRIVER_RETURN", keystore, kspw, crtfile, crtpw, label);
 	}
 	driverret = getenv("DRIVER_RETURN");
-	send_message_driver(driverret, MSG_COMP);
+	send_message_driver(driverret);
 finish:
 	unsetenv("DRIVER_RETURN");
 	free(keystore);

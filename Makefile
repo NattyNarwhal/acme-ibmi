@@ -17,7 +17,7 @@ PREFIX := /QOpenSys/Acme
 
 .PHONY: all clean test dist
 
-all: $(LIB_PATH)/ADDDCMCA.CMD $(LIB_PATH)/ADDDCMCRT.CMD $(LIB_PATH)/RMVDCMCRT.CMD $(LIB_PATH)/RNWACMCRT.CMD $(LIB_PATH)/RNWDCMCRT.CMD $(LIB_PATH)/RVKACMCRT.CMD $(LIB_PATH)/MESSAGES.MSGF
+all: $(LIB_PATH)/ADDDCMCA.CMD $(LIB_PATH)/ADDDCMCRT.CMD $(LIB_PATH)/AUTORENEW.CMD $(LIB_PATH)/RMVDCMCRT.CMD $(LIB_PATH)/RNWACMCRT.CMD $(LIB_PATH)/RNWDCMCRT.CMD $(LIB_PATH)/RVKACMCRT.CMD $(LIB_PATH)/MESSAGES.MSGF
 
 clean:
 	rm -f config.h
@@ -76,6 +76,11 @@ $(LIB_PATH)/QCMDSRC.FILE/ADDDCMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE adddcmcrt.cmd
 	system addpfm "file(acme/qcmdsrc)" "mbr(adddcmcrt)"
 	system cpyfrmstmf "mbropt(*replace)" "fromstmf(adddcmcrt.cmd)" "tombr('$(LIB_PATH)/QCMDSRC.FILE/ADDDCMCRT.MBR')"
 
+$(LIB_PATH)/QCMDSRC.FILE/AUTORENEW.MBR: $(LIB_PATH)/QCMDSRC.FILE autorenew.cmd
+	system rmvm "file(acme/qcmdsrc)" "mbr(autorenew)" || true
+	system addpfm "file(acme/qcmdsrc)" "mbr(autorenew)"
+	system cpyfrmstmf "mbropt(*replace)" "fromstmf(autorenew.cmd)" "tombr('$(LIB_PATH)/QCMDSRC.FILE/AUTORENEW.MBR')"
+
 $(LIB_PATH)/QCMDSRC.FILE/RMVDCMCRT.MBR: $(LIB_PATH)/QCMDSRC.FILE rmvdcmcrt.cmd
 	system rmvm "file(acme/qcmdsrc)" "mbr(rmvdcmcrt)" || true
 	system addpfm "file(acme/qcmdsrc)" "mbr(rmvdcmcrt)"
@@ -104,6 +109,10 @@ $(LIB_PATH)/ADDDCMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/ADDDCMCRT.MBR $(LIB_PATH)/AD
 	system dltcmd "cmd(acme/adddcmcrt)" || true
 	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/adddcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/adddcmcrt)"
 
+$(LIB_PATH)/AUTORENEW.CMD: $(LIB_PATH)/QCMDSRC.FILE/AUTORENEW.MBR $(LIB_PATH)/AUTORENEW.PGM
+	system dltcmd "cmd(acme/adddcmcrt)" || true
+	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/autorenew)" "srcfile(acme/qcmdsrc)" "pgm(acme/autorenew)"
+
 $(LIB_PATH)/RMVDCMCRT.CMD: $(LIB_PATH)/QCMDSRC.FILE/RMVDCMCRT.MBR $(LIB_PATH)/RMVDCMCRT.PGM
 	system dltcmd "cmd(acme/rmvdcmcrt)" || true
 	$(CRTCMD) $(CRTCMD_OPTS) "cmd(acme/rmvdcmcrt)" "srcfile(acme/qcmdsrc)" "pgm(acme/rmvdcmcrt)"
@@ -127,6 +136,9 @@ $(LIB_PATH)/ADDDCMCA.PGM: $(LIB_PATH)/ADDDCMCA.MODULE $(LIB_PATH)/SNDMSG.MODULE 
 $(LIB_PATH)/ADDDCMCRT.PGM: $(LIB_PATH)/ADDDCMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE $(LIB_PATH)/VARCHAR.MODULE $(LIB_PATH)/EBCDIC.MODULE $(LIB_PATH)/DCMDRIVER.MODULE
 	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/ADDDCMCRT)" "MODULE($(LIB_NAME)/ADDDCMCRT $(LIB_NAME)/DCMDRIVER $(LIB_NAME)/EBCDIC $(LIB_NAME)/SNDMSG $(LIB_NAME)/VARCHAR)"
 
+$(LIB_PATH)/AUTORENEW.PGM: $(LIB_PATH)/AUTORENEW.MODULE $(LIB_PATH)/VARCHAR.MODULE
+	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/AUTORENEW)" "MODULE($(LIB_NAME)/AUTORENEW $(LIB_NAME)/VARCHAR)"
+
 $(LIB_PATH)/RMVDCMCRT.PGM: $(LIB_PATH)/RMVDCMCRT.MODULE $(LIB_PATH)/SNDMSG.MODULE $(LIB_PATH)/VARCHAR.MODULE $(LIB_PATH)/DCMDRIVER.MODULE
 	$(CRTPGM) $(CRTPGM_OPTS) "PGM($(LIB_NAME)/RMVDCMCRT)" "MODULE($(LIB_NAME)/RMVDCMCRT $(LIB_NAME)/DCMDRIVER $(LIB_NAME)/SNDMSG $(LIB_NAME)/VARCHAR)"
 
@@ -145,6 +157,9 @@ $(LIB_PATH)/ADDDCMCA.MODULE: $(LIB_PATH) adddcmca.c dcmdriver.h sndmsg.h unseten
 
 $(LIB_PATH)/ADDDCMCRT.MODULE: $(LIB_PATH) adddcmcrt.c dcmdriver.h sndmsg.h unsetenv.h varchar.h config.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/ADDDCMCRT)" "SRCSTMF('adddcmcrt.c')"
+
+$(LIB_PATH)/AUTORENEW.MODULE: $(LIB_PATH) autorenew.c varchar.h
+	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/AUTORENEW)" "SRCSTMF('autorenew.c')"
 
 $(LIB_PATH)/DCMDRIVER.MODULE: $(LIB_PATH) dcmdriver.c sndmsg.h
 	$(CRTCMOD) $(CRTCMOD_OPTS) "MODULE($(LIB_NAME)/DCMDRIVER)" "SRCSTMF('dcmdriver.c')"

@@ -36,7 +36,8 @@ int main (int argc, char **argv)
 		}
 	}
 	/* XXX: fancy would be capturing stdio */
-	send_message_int("ACM0001", MSG_COMP, ret);
+	send_message_int("ACM0001", MSG_DIAG, ret);
+	send_message_int("ACM0001", MSG_STATUS, ret);
 	return 1;
 }
 

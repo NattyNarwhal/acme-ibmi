@@ -1,4 +1,4 @@
-void send_message_driver(char *, char *);
+void send_message_driver(char *);
 
 void ensure_libl(void);
 

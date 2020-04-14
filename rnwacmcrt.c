@@ -42,7 +42,8 @@ int main (int argc, char **argv)
 #endif
 	if (WIFEXITED(ret)) {
 		if (WEXITSTATUS(ret) == 2 && !force) { /* Unnecessary to renew */
-			send_message("ACM0002", MSG_COMP);
+			send_message("ACM0002", MSG_DIAG);
+			send_message("ACM0002", MSG_STATUS);
 			return 0;
 		} else if (WEXITSTATUS(ret) == 0) {
 			send_message("ACM0000", MSG_COMP);
@@ -50,7 +51,8 @@ int main (int argc, char **argv)
 		}
 	}
 	/* XXX: fancy would be capturing stdio */
-	send_message_int("ACM0001", MSG_COMP, ret);
+	send_message_int("ACM0001", MSG_DIAG, ret);
+	send_message_int("ACM0001", MSG_STATUS, ret);
 	return 1;
 }
 

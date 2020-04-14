@@ -14,20 +14,22 @@ int main (int argc, char **argv)
 	ensure_libl();
 	keystore = vctostr((varchar16_t*)argv[1]);
 	if (access(keystore, R_OK) != 0) {
-		send_message("ACM0103", MSG_COMP);
+		send_message("ACM0103", MSG_DIAG);
+		send_message("ACM0103", MSG_STATUS);
 		goto finish;
 	}
 	kspw = vctostr((varchar16_t*)argv[2]);
 	crt = vctostr((varchar16_t*)argv[3]);
 	if (access(crt, R_OK) != 0) {
-		send_message("ACM0104", MSG_COMP);
+		send_message("ACM0104", MSG_DIAG);
+		send_message("ACM0104", MSG_STATUS);
 		goto finish;
 	}
 	label = vctostr((varchar16_t*)argv[4]);
 	/* Run driver, then fall through to cleanup */
 	QYCUDRIVER("67", "DRIVER_RETURN", keystore, kspw, label, crt, "1");
 	driverret = getenv("DRIVER_RETURN");
-	send_message_driver(driverret, MSG_COMP);
+	send_message_driver(driverret);
 finish:
 	unsetenv("DRIVER_RETURN");
 	free(keystore);
